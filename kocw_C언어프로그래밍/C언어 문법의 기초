@@ -1,0 +1,14 @@
+1. 전처리 명령
+- "#"로 시작
+- 컴파일러가 처리하기 전에 text로서 대체됨
+- #include <stdio.h> -> standard input output
+
+2. main 함수
+- int main() -> 프로그램이 실행되면 무조건 여기서 시작
+  {
+      실제 실행되는 코드
+  }
+
+3. 함수의 종료 : return
+- return 0; // 호출한 측(OS)에게 값을 반환하면서 종료
+- 생략하면 "}"에서 implicit return 일어남
