@@ -1,0 +1,27 @@
+1. printf와 hex format
+- 16진수 : (hexadecimal) %x 또는 %x
+- printf("십진수 %d = 16진수 %x\n"),
+    num, num);
+- 8진수 (octal) : %o
+
+2. scanf와 16진수
+- scanf("%x" %n);
+  -> %x로 16진수임을 이미 알고있기 때문에
+     0xAB라면 0x빼고 AB만 입력
+- scanf("%o", %n);
+  -> 마찬가지로 앞의 0 빼고 입력
+
+3. ASCII code
+- 변수 값이 숫자 문자인지 쉽게 알아낼 수 있음
+- 코드값이 48~57이면 숫자 문자.
+- 마찬가지로 대문자인지 소문자인지도 판별 가능
+- cf) 대문자를 소문자로 바꾸기
+    c를 대문자 A에서 소문자 a로 바꿀때:
+    c = c + 'a' - 'A'
+
+4. getchar() putchat()
+- getchar() : 표준입력으로부터 입력받은 문자를 int 타입으로 반환
+- putchar() : 매개변수로 들어온 문자 c를 표준출력에 문자로 출력.
+              아스키 코드표와 대응
+              ex) putchar(80); : P를 반환
+                  putchar("P"); : P를 반환
