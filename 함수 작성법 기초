@@ -1,0 +1,86 @@
+1. 함수의 분류
+- 형식에 따라
+  값을 반환하지 않고 끝냄 : void functions
+  값을 반환 : int, double, etc.
+  
+  파라메터 값을 받지 않고 실행하거나
+  하나 이상의 파라메터 값을 받아서 실행
+
+2. C functions 
+- f(x1,x2,...xn)과 같이 "호출"
+- 반환 값이 있는 경우 임시 메모리에 저장
+  ex)
+  putchar('a') // no return value
+  getchar(); -> 문자를 표준입력에서 가져다가 임시메모리에 저장하므로 그냥   
+                함수만 호출하는건 임시메모리가 없어져버리기 때문에 불가능
+  c = getchar(); -> 이런 식으로 변수에다가 저장을 해둬야함
+
+- 파라메터/반환값이 없는 함수
+  void function_name(){
+      실제 할 일;
+  }
+
+  ex)
+  void hello(){
+      printf("Hello")
+      return; // 생략 가능
+  }
+
+- 함수의 위치
+  ex)
+  void hello(){
+      printf("Hello")
+      return; // 생략 가능
+  }
+  int main(){
+      hello();
+      return 0;
+  }
+  -> 이렇게 main 함수보다 앞에(정확히는 사용하는 함수 앞에) 두어야 함
+
+- 파라메터가 있는 함수
+  printf("%d\n", x);
+
+  putchat('a') // 파라메터 한개
+  c = putchar(); // 파라메터 없음
+
+  파라메터 정의하기
+  void fun_name (int a, int b){
+    ...
+  }
+  -> 여기서 int a,b는 형식 파라메터.
+
+  실제로 함수를 쓸 경우
+  main:
+  int a = 999;
+  fun(123, a) -> int a에 123이, int b에는 a(999)라는 값이 복사되는 것임
+
+3. 일반적인 함수의 정의 방법
+- 반환값이 있는 경우
+  반환 타입을 명시
+  return 문으로 값 반환
+  임시 메모리에 저장
+  ...
+  type function_name(parameter_list){
+    실제 할 일;
+  }
+
+  ex)
+  int add(int x, int y){
+    // anything goes in here
+    return x+y;
+  }
+
+4. 함수의 기타 특징
+- 함수 안에 또 다시 다른 함수 호출 가능
+
+- 지역 변수 local variables
+  파라메터 이외에 함수 안에서만 사용할 변수가 있다면 함수 안에서 선언
+  임시적인 성격을 가짐
+- 전역 변수
+  함수 바깥에서 선언된 변수
+  but! 함수는 전역변수를 사용하지 않는 것을 원칙으로 한다
+
+- call by value
+  사본은 변경 가능하지만
+  원본의 변경이 불가능

@@ -1,0 +1,26 @@
+1. probing 1
+   루트를 반복할 때마다 중간에 printf를 찍어서 오류 있는지 검사
+
+   probing 2
+   #define DEBUG //나중에 #undef
+   ...
+   probe를 삽입할 지점마다 print문을 넣음.
+   print문 앞 뒤에 #ifdef DEBUG / #endif 넣음
+   
+   ex)
+    #define DEBUG
+    ...
+     for (i=0; i<10; i++){
+         sum += i;
+    #ifdef DEBUG
+        printf("Sum upto %d is %d\n", i, sum);
+    #endif
+     }
+    printf("Sum is: %n", sum)
+    
+
+   DEBUG라는 심볼이 정해져있으면 이것을 컴파일하라는 뜻
+   #define 부분을 #undef으로 바꾸면 DEBUG 심볼이 없기 때문에 컴파일에서 저 부분을 빼버림. 즉 삭제된 것과 마찬가지.
+
+2. GDB
+- GNU 디버거
