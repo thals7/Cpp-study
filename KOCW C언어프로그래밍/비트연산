@@ -1,0 +1,8 @@
+1. bitwise AND 연산의 응용
+- 정수와 정수의 연산 (연산자 &)
+- & 와 && 의 차이
+  & : 비트별로 따로 계산. 결과는 정수
+  && : 정수 전체가 하나의 값. 1비트가 하나라도 있으면 true 없으면 false
+
+2. bitwise
+- &(bitwise and) 와 |(bitwise or)

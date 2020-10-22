@@ -1,0 +1,51 @@
+1. 구조체의 사용
+- struct student{
+    char name[10];
+    float GPA;
+    int id;
+  }; // 멤버 변수들(구조체) 정의 -> 붕어빵의 틀에 해당
+  struct student Lee; // 변수 선언. Lee가 변수명
+
+2. 멤버 변수의 사용
+-struct student{
+    char name[10];
+    float GPA;
+    int id;
+  }; Jack, Kim, Lee; // 이 세개가 멤버 변수
+- Lee.id = 991203;
+  Lee.GPA = 3.36;
+  Jack.GPA = Kim.GPA;
+  if (Kim.GPA > Lee.GPA)...
+  scanf("%f", &Kim.GPA)
+  ** Jack.name = Lee.name -> 이건 불가능!
+  ** 대신 strcpy(Jack.name, Lee.name); -> 이렇게는 가능
+
+3. 구조체 선언 방법
+(1) struct card{
+      int rank; int suit;
+    } c1;
+
+(2) struct card{
+      int rank; int suit;
+    };
+    struct card c2;
+
+(3) typedef struct card{
+        int rank; int suit;
+    } card_t; // card_t는 새로운 타입명이 됨
+    card_t c3 // struct 를 쓰지 않고 그냥 card_t만 써도 됨
+
+    cf) typedef란?
+    새로운 타입의 이름을 만들기 위한 것
+    typedef unsigned int uint;
+    -> unsigned int 라는 타입의 내용을 정하고 unit이라는 새로운 이름을 부여함.
+    uint count;
+    unsigned int count; // 두 개가 동일하다고 할 수 있음
+
+4. union
+- struct와 거의 동일하나 메모리 배열이 다름
+  struct : 멤버들은 모두 다른 메모리
+  union : 멤버들의 메모리를 겹침(메모리를 공유)
+  따라서 메모리의 크기는
+  struct : 멤버들의 크기의 합 (+a)
+  union : 멤버들의 크기의 최대값 (+a)

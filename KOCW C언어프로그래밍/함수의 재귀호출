@@ -1,0 +1,14 @@
+1. Recursion 재귀호출
+- 자신의 copy를 호출하여 일을 처리하게 함.
+- copy는 또 다른 copy를 재귀호출.
+
+- 무한 호출의 제한
+  int fun(int n){
+    if (n==0) return; // 무한호출 제한
+    printf("%d\n", n);
+    fun(n-1);
+  }
+  int main(){
+    fun(3);
+  }
+

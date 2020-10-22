@@ -1,0 +1,48 @@
+1. 2차원 배열
+- 행, 열로 이루어진 배열
+- 선언 : int a[3][4]; float f[10][10]
+
+2. for loop의 이용
+- 한 행에 대한 반복
+  #define ROW 4
+  #define COL 5
+  int score[ROW][COL];
+  // 행 0을 모두 1로 만들려면?
+    for (col=0; col<COL; col++){
+      a[0][col] = 1;
+    }
+
+- 전체에 대한 반복
+  #define ROW 4
+  #define COL 5
+  int score[ROW][COL];
+  for (row=0; row<ROW; row++){
+      for (col=0; col<COL; col++){
+        a[row][col] = 0;
+      }
+  }
+
+3. 함수의 형식 파라메터
+- int blah(int A[3][4])
+- 행 개수는 생략 가능. but 열 개수(행 크기)는 필요.
+- 행 개수와 열 개수 모두 생략은 불가능
+
+- int blah(int m, int n, int a[row][col])
+- 이런 식도 가능하지만 추천은 X
+
+- 원본 배열의 실제 크기가 중요함(특히 열 개수)
+
+4. 가변 크기 배열
+- int matprint(int row, int col, int A[row][col])
+  int row, col;
+      scanf("%d%d", &row, &col)
+      int a[row][col];
+      matprint(row,col,a)
+
+- C 언어에서만 가능 (C++ 불가능)
+- 크기 제한이 있음
+
+5. 스트링의 배열
+- char names[5][10];
+- scanf("%s", names[0]); // &붙이지 않음!
+  printf("%s\n", names[1]);  
