@@ -49,3 +49,43 @@ while (p != NULL)
 }
 여기서  p라는 추가적인 변수를 사용한 이유?
 while (head != NULL) {...} 이라고 하게 될 경우 실행은 위의 코드와 같으나 마지막에 head의 값이 NULL이 되어버림 (노드의 첫번째 주소를 저장해야하는 head의 임무를 저버림)
+
+
+연결리스트의 맨 앞에 새로운 노드 추가하기
+(1)새로운 노드를 만들고 추가할 데이터를 저장
+Node *tmp = (Node *)malloc(sizeof(Node)); 
+tmp->data = item;
+(2) 새로운 노드의 next 필드가 현재의 head노드를 가리키도록 함
+tmp->next = head;
+(3) 새로운 노드를 새로운 head 노드로 함
+head = tmp;
+
+특수한 상황의 고려 : 연결리스트를 다루는 프로그램에서 가장 주의할 점은 내가 작성한 코드가 일반적인 경우만이 아니라 특수한 경우에도 문제 없이 작동하는지 확인하는 것임
+위와 같은 맨 앞에 새로운 노드를 추가하는 상황에서는 기존의 연결 리스트의 길이가 0인 경우, 즉 head가 NULL인 경우에도 문제가 없는지 확인해야함
+
+보통 head는 전역변수로 선언됨
+but! 전역변수로 선언되지 않은 경우
+함수 작성시 포인터 변수 head의 주소를 매개변수로 받아야 함
+void add_first(Node **ptr_head, char *item)
+{
+    Node *tmp = (Node *)malloc(sizeof(Node));
+    temp->data = item;
+    temp->next = *ptr_head
+    *ptr_head = temp;
+}
+이렇게 구현할 경우 함수는 다음과 같이 호출해야함
+add_first(&head, item_to_store);
+
+
+어떤 노드 뒤에 새로운 노드 삽입하기
+(1) 새로운 노드를 만들고 데이터를 저장
+Node *tmp = (Node *)malloc(sizeof(Node));
+tmp->data = item;
+(2) 새로운 노드의 next 필드가 prev의 다음 노드를 가리키도록 함
+(전: [prev] -> [next] 후: [prev] -> [새로운 노드] -> [next] )
+tmp->next = prev->next;
+(3) 새로운 노드를 prev의 다음 노드로 만듦
+prev->next = tmp;
+
+연결리스트에 새로운 노드를 삽입할 때 삽입할 위치의 바로 앞 노드의 주소가 필요함
+즉 어떤 노드의 뒤에 삽입하는 것은 간단하지만, 반대로 어떤 노드의 앞에 삽입하는 것은 간단하지 않음
