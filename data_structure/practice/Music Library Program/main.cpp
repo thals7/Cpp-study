@@ -8,14 +8,35 @@
 
 void process_command();
 void handle_add();
+void handle_load();
 
 
 int main()
 {
-    void initialize();
+    initialize();
+    handle_load();
     process_command();
 
     return 0;
+}
+
+void handle_load()
+{
+    char buffer[BUFFER_LENGTH]
+
+    printf("Data file name ? ");
+    if (read_line(stdin, buffer, BUFFER_LENGTH) <= 0 )
+        return;
+
+    FILE *fp = fopen(buffer, "r");
+    if ( fp == NULL )
+    {
+        printf("No such file exists.\n");
+        return;
+    }
+    
+    load(fp);
+    fclose(fp);    
 }
 
 void process_command()
@@ -26,15 +47,16 @@ void process_command()
     while(1)
     {
         printf("$ ");
-        if (read_line(stdin, command_line, BUFFER_LENGTH <= 0))
+        if (read_line(stdin, command_line, BUFFER_LENGTH) <= 0)
             continue;
         
         command = strtok(command_line, " ");
 
         if (strcmp(command, "add") == 0)
             handle_add();
-        /*else if (strcmp(command, "search") == 0)
+        else if (strcmp(command, "search") == 0)
             handle_search();
+        /*
         else if (strcmp(command, "remove") == 0)
             handle_remove();
             */
@@ -72,4 +94,24 @@ void handle_add()
     
     /* add to the music lubrary */
     add_song(artist, title, path);
+}
+
+void handle_search()
+{
+    char name[BUFFER_LENGTH], title[BUFFER_LENGTH];
+
+    printf("    Artist: ");
+    if (read_line(stdin, name, BUFFER_LENGTH) <= 0 )
+    {
+        printf("    Artist name required.");
+        return;
+    }
+
+    printf("    Title: ");
+    int title_len = read_line(stdin, title, BUFFER_LENGTH);
+
+    if (title_len <= 0)
+        search_song(name);
+    else
+        search_song(name, title);
 }

@@ -1,20 +1,103 @@
 #include "library.h"
+#include "string_tools.h"
 
 #define NUM_CHARS 256
+#define BUFFER_LENGTH 200
 
 Artist *artist_directory[NUM_CHARS];
+
 int num_index = 0;
 
 void insert_node(Artist *ptr_artist, SNode *ptr_snode);
 void print_artist(Artist *p);
 void print_song(Song *ptr_song);
 Artist *find_artist(char *name);
+SNode *find_snode(Artist *ptr_artist, char *title);
+
 
 
 void initialize() // 아티스트 배열 초기화 함수
 {
     for ( int i = 0; i < NUM_CHARS; i++)
         artist_directory[i] = NULL;
+}
+
+void load(FILE *fp)
+{
+    char buffer[BUFFER_LENGTH];
+    char *name, *title, *path;
+
+    while(1)
+    {
+        if (read_line(fp, buffer, BUFFER_LENGTH) <= 0) // 데이터 파일의 끝에 도달
+            break;
+        
+        name = strtok(buffer, "#");
+        if (strcmp(name, " ") == 0)
+            name == NULL;
+        else
+            name = strdup(name);
+        
+        title = strtok(NULL, "#");
+        if (strcmp(title, " ") == 0)
+            title == NULL;
+        else
+            title = strdup(title);
+        
+        path = strtok(NULL, "#");
+        if (strcmp(path, " ") == 0)
+            path == NULL;
+        else
+            path = strdup(path);
+    }
+}
+
+void search_song(char *artist, char *title)
+{
+    Artist *ptr_artist = find_artist(artist);
+    if ( ptr_artist == NULL )
+    {
+        printf("No such artist exists.\n");
+        return;
+    }
+
+    SNode *ptr_snode = find_snode(ptr_artist, title);
+
+    if ( ptr_snode != NULL )
+    {
+        printf("Found:\n");
+        print_song(ptr_snode->song);
+    }
+    else
+    {
+        printf("No such song exists.\n");
+        return;
+    }
+}
+
+void search_song(char *artist)
+{
+    Artist *ptr_artist = find_artist(artist);
+    if ( ptr_artist == NULL )
+    {
+        printf("No such artist exists.\n");
+        return;
+    }
+    
+    printf("Found:\n");
+    print_artist(ptr_artist);
+}
+
+SNode *find_snode(Artist *ptr_artist, char *title)
+{
+    SNode *ptr_snode = ptr_artist->head;
+    while (ptr_snode != NULL && strcmp(ptr_snode->song->title, title) < 0)
+        ptr_snode = ptr_snode->next;
+
+    if (ptr_snode != NULL && strcmp(ptr_snode->song->title, title) == 0) // 노래 제목이 같은 곡을 찾았을 때
+        return ptr_snode;  
+    else // 제목이 같은 노래를 찾지 못했을 때
+        return NULL;
 }
 
 Song *create_song_instance(Artist *ptr_artist, char *title, char *path)
