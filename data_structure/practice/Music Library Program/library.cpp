@@ -3,8 +3,10 @@
 
 #define NUM_CHARS 256
 #define BUFFER_LENGTH 200
+#define SIZE_INDEX_TABLE 100
 
 Artist *artist_directory[NUM_CHARS];
+SNode index_directory[SIZE_INDEX_TABLE];
 
 int num_index = 0;
 
@@ -20,6 +22,9 @@ void initialize() // 아티스트 배열 초기화 함수
 {
     for ( int i = 0; i < NUM_CHARS; i++)
         artist_directory[i] = NULL;
+
+    for ( int i = 0; i < SIZE_INDEX_TABLE; i++)
+        index_directory[i] = NULL;
 }
 
 void load(FILE *fp)
@@ -128,7 +133,8 @@ void add_song(char *artist,char *title, char *path)
     ptr_snode->prev = NULL;
 
     //insert node
-    insert_node(ptr_artist, ptr_snode); 
+    insert_node(ptr_artist, ptr_snode);
+    insert_to_index_directory(ptr_song);
 }
 
 void insert_node(Artist *ptr_artist, SNode *ptr_snode)
@@ -163,8 +169,36 @@ void insert_node(Artist *ptr_artist, SNode *ptr_snode)
         p->prev->next = ptr_snode;
         p->prev = ptr_snode;
     }
-    
+}
 
+void insert_to_index_directory(Song *ptr_song)
+{
+    SNode *ptr_snode = (SNode *)malloc(sizeof(SNode));
+    ptr_snode->song = ptr_song;
+    ptr_snode->next = NULL;
+    ptr_snode->prev = NULL; // unused
+
+    int index = ptr_song->index % SIZE_INDEX_TABLE;
+
+    // add the snode into the single linked list at index_table[index]
+    SNode *p = index_directory[index];
+    SNode *q = NULL;
+    while (p != NULL && strcmp(p->song->title, ptr_song->title) < 0)
+    {
+        q = p;
+        p = p->next;
+    }
+    if (q==NULL) // add first
+    {
+        ptr_snode->next = p;
+        index_directory[index] = ptr_snode;
+    }
+    else // add_after q
+    {
+        ptr_snode->next = p;
+        q->next = ptr_snode;
+    }
+    
 }
 
 Artist *create_artist_instance(char *name) // 객체 생성을 위한 malloc 함수가 분산되어 사용되면 초기화가 필요한 때에 제대로 이루어지지 않는 등 여러 문제가 있을 수 있으므로 객체를 생성하는 함수를 따로 만들어 그 안에서 malloc 을 하도록 하는 것이 좋음
