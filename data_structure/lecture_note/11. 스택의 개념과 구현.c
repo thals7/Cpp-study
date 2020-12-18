@@ -177,16 +177,17 @@ bool is_empty(Stack s)
 void push(Stack s, Item i)
 {
     if (is_full(s))
-        reallocate(s);
+        reallocate(s); // 스택에 저장된 데이터의 개수를 n이라고 하면 reallocate함수의 시간복잡도는 O(n) -> 물론 처음부터 배열의 크기를 크게 만들어 reallocate를 피할수도 있음
     s->top++;
-    s->contents[s->top] = i;
+    s->contents[s->top] = i; // reallocate함수를 제외한 나머지 부분의 시간복잡도는 O(1)
 }
 
 Item pop(Stack S)
 {
     if (is_empty(s))
         terminate("Error in pop: stack is empty.");
-    s->top;
+    s->top--;
+    return s->contents[s->top+1]; //pop() 함수의 시간복잡도는 O(1)
 }
 
 Item peek(Stack s)
@@ -291,6 +292,7 @@ Item pop(Stack S)
     free(old_top);
     return i;
 }
+// 스택을 연결리스트로 구현한 경우 push와 pop의 시간복잡도는 O(1)
 
 Item peek(Stack s)
 {
