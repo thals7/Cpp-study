@@ -81,10 +81,10 @@ RB-INSERT(T, z) // z : insert할 노드
 
 RB-INSERT-FIXUP
 - 위반될 가능성이 있는 조건들
-  - (2) 루트노드는 black
+  (2) 루트노드는 black
     - z가 루트 노드인 경우 위반
     - 루트를 black으로 바꿔주면 됨
-  - (4) red노드의 자식노드들은 전부 black
+  (4) red노드의 자식노드들은 전부 black
     - z의 부모 p[z]가 red인 경우 위반
 
 - Loop Invariant (루프를 도는 동안 변하지 않고 유지되는 조건)
@@ -130,7 +130,7 @@ RB-INSERT-FIXUP(T, z) // z : insert할 노드 (red)
 13              color[p[p[z]]] <- RED
 14              RIGHT-ROTATE(T, p[p[z]])
 15      else(same as then clause with "right" and "left" exchanged) // Case 4,5,6
-16 color[root[T]] <- BLACK // Case 1,4 최악의 경우로 루트 노드까지 올라가 루트가 red인 상태로 while문이 종료될 수도 있기 때문에 black으로 바꿔줌
+16 color[root[T]] <- BLACK // Case 1,4 최악의 경우로 루트 노드까지 올라가 루트가 red인 상태로 while문이 종료될 수도 있기 때문에 black으로 바꿔줌 
 
 INSERT의 시간복잡도
 - BST에서의 INSERT: O(log₂n)
@@ -139,3 +139,113 @@ INSERT의 시간복잡도
   - Case 2,3에 해당할 경우 O(1)
   - 따라서 트리의 높이(logn)에 비례하는 시간
 - 즉, INSERT의 시간복잡도는 O(log₂n)
+
+DELETE
+- 보통의 BST에서처럼 DELETE
+- 실제로 삭제된 노드 y가 red였으면 종료
+- y가 black이었을 경우 RB-DELETE-FIXUP을 호출
+
+RB-DELETE(T, z) // z: delete할 노드
+1  if left[z] = nil[T] or right[z] = nil[T] // z의 자식이 없거나 하나인 경우
+2    then y <- z // y: 실제로 삭제할 노드
+3  else y <- TREE-SUCCESSOR(z) // z의 자식이 2개라면 실제로 삭제되는 노드는 z가 아닌 z의 successor
+4  if left[y] != nil[T]
+5    then x <- left[y] // x: y의 자식 노드
+6  else x <- right[y]
+7  p[x] <- p[y]
+8  if p[y] = nil[T] // y가 트리의 루트 노드인 경우
+9    then root[T] <- x
+10 else if y = left[p[y]]
+11   then left[p[y]] <- x
+12 else right[p[y]] <- x
+13 if y != z
+14   then key[z] <- key[y]
+15     copy y satellite data into z  
+16 if color[y] = BLACK // 삭제된 노드 y가 black인 경우 black height 문제나 red-red 문제 발생 가능
+17   then RB-DELETE-FIXUP(T, x) // x: y의 자식 노드 (y가 자식이 없었을 경우 NIL 노드) 두 경우 모두 p[x]는 원래 p[y]였던 노드
+18 return y
+
+RB-DELETE-FIXUP(T, x)
+- 위반될 가능성이 있는 조건들
+  (2) 루트노드는 black
+    - y가 루트였고 x가 red인 경우 위반
+    - 루트를 black으로 바꿔주면 됨
+  (4) red노드의 자식노드들은 전부 black
+    - p[y]와 x가 모두 red인 경우 위반
+    - x를 black으로 바꿔주면 됨
+  (5) 모든 노드에 대해서 그 노드로 부터 자손인 리프노드에 이르는 모든 경로에는 동일한 개수의 black노드가 존재
+    - 원래 y를 포함했던 모든 경로는 이제 black 노드가 하나 부족한 상태
+      1) 노드 x에 "extra black"을 부여해서 일단 (5)를 만족
+      2) 노드 x는 "double black" 혹은 "red & black"
+
+- 아이디어
+  - extra black을 트리의 위쪽으로 올려보냄
+  - x가 red & black 상태가 되면 그냥 black 노드로 만들고 끝냄
+  - x가 루트가 되면 그냥 extra black을 제거
+
+- Loop Invariant (루프를 도는 동안 변하지 않고 유지되는 조건)
+ - x는 루트가 아니면서 double-black인 노드
+ - w는 x의 형제노드
+ - w는 NIL노드가 될 수 없음 (아니면 x의 부모에 대해 조건 5가 위반)
+
+1. x가 p[x]의 왼쪽 자식인 경우
+Case 1: w가 red인 경우
+- w의 자식들은 black
+- w를 black으로, p[x]를 red로
+- p[x]에 대해서 left-rotation 적용
+- x의 새로운 형제노드는 원래 w의 자식노드, 따라서 새로운 w 노드(원래 w의 자식노드였던)는 black 노드
+- Case 2,3,4(w가 black인 경우)로 넘어감
+
+Case 2: w는 black, w의 자식들도 black
+- x와 w가 모두 black이므로 부모는 red일수도, black일수도 있음
+- x의 extra-black과 w의 black을 뺏어서 x는 black으로, w는 red로 만듦
+- p[x]에게 x와 w로부터 뺏은 black을 줌 // 트리의 위에서부터 내려올때의 black노드의 개수는 유지됨
+- p[x]가 red였다면 red & black을 가지고 있는 노드를 black노드로 만들고 끝내고, p[x]가 black이었다면 p[x]를 새로운 x로 해서 반복
+- 만약 Case 1에서 2로 넘어온 경우라면 p[x]는 red였고, 따라서 새로운 x는 red & black이 되어서 종료
+- 처음부터 Case 2인 경우 p[x]가 black이었다면, p[x]가 double black이 되므로 반복해서 문제를 해결해야함
+
+Case 3: w는 black, w의 왼쪽자식이 red
+- w를 red로, w의 왼자식을 black으로
+- w에 대해서 right-rotation 적용
+- x의 새로운 형제 w는 오른자식이 red (Case 4에 해당)
+
+Case 4: w는 black, w의 오른쪽 자식이 red
+- w의 색을 현재 p[x]의 색으로 (unknown color)
+- p[x]를 black으로, w의 오른자식을 black으로
+- p[x]에 대해서 left-rotation 적용
+- x의 extra-black을 제거하고 종료
+- 결과적으로 double black 노드가 없어졌음에도 불구하고 black height가 동일하게 유지됨
+
+2. x가 p[x]의 오른쪽 자식인 경우
+- Case 1,2,3,4와 대칭적이므로 생략
+
+RB-DELETE-FIXUP(T, x) // 실제로 삭제한 노드인 y의 자식인 x를 넘겨주면서 Delete Fixup 수행
+1  while x != root[T] and color[x] = BLACK
+2    do if x = left[p[x]] // Case 1~4의 경우
+3         then w <- right[p[x]] // w: x의 형제노드
+4           if color[w] = RED // Case 1
+5             then color[w] <- BLACK
+6                  color[p[x]] <- RED
+7                  LEFT-ROTATE(T, p[x])
+8                  w <- right[p[x]] // 새로운 w는 BLACK이므로 다시 while문의 처음으로 돌아가 Case 2~4로 가게 됨
+9           if color[left[w]] = BLACK and color[right[w]] = BLACK // Case 2
+10            then color[w] <- RED
+11                 x <- p[x]
+12          else if color[right[w]] = BLACK // Case 3
+13            then color[left[w]] <- BLACK
+14                 color[w] <- RED
+15                 RIGHT-ROTATE(T, p[x])
+16                 w <- right[p[x]]
+17          color[w] <- color[p[x]] // Case 4
+18          color[p[x]] <- BLACK
+19          color[right[w]] <- BLACK
+20          LEFT-ROTATE(T, p[x])
+21          x <- root[T] // x라는 포인터 변수를 루트 노드로 변경하여 Case 4가 끝나면 while문을 탈출하도록 함 (실제 트리에는 변화가 없고 트리의 루트가 변한 것도 아님)
+22      else (same as then clause with "right" and "left" exchanged) // Case 5~8의 경우
+23 color[x] <- BLACK
+
+DELETE의 시간복잡도
+- BST에서의 INSERT: O(log₂n)
+- RB-DELETE-FIXUP: O(log₂n)
+  - Case 2나 6이 반복되는 최악의 경우에도 시간복잡도는 트리의 높이에 비례
+- 결과적으로 DELETE + FIXUP의 시간복잡도는 O(log₂n)
